@@ -5,6 +5,7 @@
 #include "driver/mcpwm_prelude.h"
 #include "driver/mcpwm_timer.h"
 #include "esp_err.h"
+#include "freertos/FreeRTOS.h"
 #include "hal/mcpwm_types.h"
 #include "soc/clk_tree_defs.h"
 #define SERVO_TIMEBASE_RESOLUTION_HZ 1000000 // 1MHz, 1us per tick
@@ -25,7 +26,7 @@ int servo_init(servo_dev_t *dev) {
   mcpwm_timer_handle_t timer = NULL;
   mcpwm_timer_config_t timer_config = {
       .group_id = 0,
-      .clk_src = MCPWM_TIMER_CLK_SRC_DEFAULT,
+      .clk_src = GPTIMER_CLK_SRC_DEFAULT,
       .resolution_hz = SERVO_TIMEBASE_RESOLUTION_HZ,
       .period_ticks = SERVO_TIMEBASE_RESOLUTION_HZ / dev->control_hz,
       .count_mode = MCPWM_TIMER_COUNT_MODE_UP,
@@ -71,6 +72,7 @@ int servo_init(servo_dev_t *dev) {
 int set_servo_degree(servo_dev_t *dev, int degree) {
   if (dev == NULL)
     return -1;
-  return mcpwm_comparator_set_compare_value(dev->comparator,
-                                            angle_to_compare(dev, degree));
+  uint32_t val = angle_to_compare(dev, degree);
+  printf("degree=%d val=%ld\n",degree,val);
+  return mcpwm_comparator_set_compare_value(dev->comparator, val);
 }

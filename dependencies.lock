@@ -1,0 +1,39 @@
+dependencies:
+  espressif/bdc_motor:
+    component_hash: 9292b605cfd390ff62225caa93e02700b86377e6a3156620192e4876dcf87b27
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 0.1.0
+  espressif/esp_lcd_sh1107:
+    component_hash: 9cc00a4d066e3e1d120fd2006d30612766488379b820804092a9bfedb3c1f93c
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.0
+  espressif/esp_lvgl_port:
+    component_hash: b43dc04720d126cbfe14d53a84787e4c24b7bd7f15468e224c930ad3ffb32258
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.4.0
+  espressif/led_strip:
+    component_hash: ed1d5c6113fa545e20c7be17e6e7c09d43b18fcb43068e2b2b27a412de6a405a
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 2.5.2
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.3.0
+  lvgl/lvgl:
+    component_hash: 948bff879a345149b83065535bbc4a026ce9f47498a22881e432a264b9098015
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 8.3.11
+manifest_hash: 55b72085e896dba69cbf30e1a56b897bb8bb317b84637fa2c6e3898b3663cd8d
+target: esp32
+version: 1.0.0
