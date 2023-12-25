@@ -4,6 +4,7 @@ idf_component_register(SRCS
                     "servo_task.c"                   
                     "oled_task.cpp"
                     "wifi.c"
+                    "mqtt.c"
 
                     "./eye/Eye.cpp"
                     "./eye/AsyncTimer.cpp"
@@ -32,7 +33,7 @@ idf_component_register(SRCS
                     PRIV_REQUIRES
                     mbedtls
                     esp_wifi
-
+                    mqtt
                     )
 target_compile_options(${COMPONENT_LIB} PUBLIC -std=gnu++11)
 

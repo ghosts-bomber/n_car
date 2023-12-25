@@ -5,10 +5,13 @@
  */
 
 #include "esp_chip_info.h"
+#include "esp_event.h"
 #include "esp_flash.h"
+#include "esp_netif.h"
 #include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "mqtt.h"
 #include "nvs_flash.h"
 #include "oled_task.h"
 #include "portmacro.h"
@@ -31,9 +34,12 @@ static void init_nvs() {
 
 extern "C" void app_main(void) {
   init_nvs();
+  ESP_ERROR_CHECK(esp_netif_init());
+  ESP_ERROR_CHECK(esp_event_loop_create_default());
   wifi_init_sta();
   create_servo_task();
   create_oled_task();
+  mqtt_app_start();
 
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
