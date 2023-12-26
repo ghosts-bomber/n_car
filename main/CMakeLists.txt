@@ -34,6 +34,7 @@ idf_component_register(SRCS
                     mbedtls
                     esp_wifi
                     mqtt
+                    json
                     )
 target_compile_options(${COMPONENT_LIB} PUBLIC -std=gnu++11)
 
