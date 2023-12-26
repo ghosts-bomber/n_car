@@ -60,7 +60,7 @@ void create_oled_task() {
   //face->Behavior.SetEmotion(eEmotions::Angry, 1.0);
   //face->Behavior.SetEmotion(eEmotions::Sad, 1.0);
   // Automatically switch between behaviours (selecting new behaviour randomly based on the weight assigned to each emotion)
-  face->RandomBehavior = true;
+  // face->RandomBehavior = true;
 
   // Automatically blink
   face->RandomBlink = true;

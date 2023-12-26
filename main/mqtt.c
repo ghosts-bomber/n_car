@@ -19,7 +19,7 @@
 #include "esp_log.h"
 #include "mqtt_client.h"
 
-#define MQTT_IP "8.141.156.132"
+#define MQTT_IP ("8.141.156.132")
 #define MQTT_PORT (1883)
 #define MQTT_USER "ma"
 #define MQTT_PWD "12345678"
@@ -29,7 +29,7 @@
 #define TOPIC_EMO ("/a/emo")
 
 #define COMPIERE_TOPIC(t)                                                      \
-  ((strncmp(topic, t, topic_len)) && (strlen(t) == topic_len))
+  ((strncmp(topic, t, topic_len) == 0) && (strlen(t) == topic_len))
 
 static const char *TAG = "mqtt_";
 
@@ -48,6 +48,7 @@ static void process_msg(const char *topic, int topic_len, const char *data,
     cJSON *pJsonRoot = cJSON_ParseWithLength(data, data_len);
     if (pJsonRoot != NULL) {
       int16_t angle = cJSON_GetObjectItem(pJsonRoot, "angle")->valueint;
+      ESP_LOGD(TAG, "recv angle: %d", angle);
       cJSON_Delete(pJsonRoot);
       xQueueSend(servo_queue, &angle, 0);
     } else {
@@ -127,6 +128,7 @@ void mqtt_app_start(void) {
   servo_queue = xQueueCreate(10, sizeof(int16_t));
   esp_mqtt_client_config_t mqtt_cfg = {
       .broker.address.hostname = MQTT_IP,
+      .broker.address.transport = MQTT_TRANSPORT_OVER_TCP,
       .broker.address.port = MQTT_PORT,
       .credentials.username = MQTT_USER,
       .credentials.authentication.password = MQTT_PWD,
