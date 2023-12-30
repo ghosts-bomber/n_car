@@ -35,7 +35,7 @@ float mapFloat(float x, float in_min, float in_max, float out_min, float out_max
   // Map the proportion to the output range and return the result
   return (proportion * (out_max - out_min)) + out_min;
 }
-void oled_task(void *param) {
+static void oled_task(void *param) {
   showmain();
   showmain2();
   int i=0;

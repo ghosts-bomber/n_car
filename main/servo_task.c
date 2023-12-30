@@ -4,7 +4,7 @@
 #include "portmacro.h"
 #include <stdint.h>
 extern QueueHandle_t servo_queue;
-void servo_task(void* param)
+static void servo_task(void* param)
 {
   int16_t angle = 0;
   servo_dev_t* servo_dev = (servo_dev_t*)(param);

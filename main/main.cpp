@@ -18,6 +18,7 @@
 #include "sdkconfig.h"
 #include "servo_task.h"
 #include "wifi.h"
+#include "led_task.h"
 static void init_nvs() {
   // Initialize NVS
   esp_err_t ret = nvs_flash_init();
@@ -37,6 +38,7 @@ extern "C" void app_main(void) {
   mqtt_app_start();
   create_servo_task();
   create_oled_task();
+  create_led_task();
 
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);

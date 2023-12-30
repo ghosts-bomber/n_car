@@ -5,6 +5,8 @@ idf_component_register(SRCS
                     "oled_task.cpp"
                     "wifi.c"
                     "mqtt.c"
+                    "led_task.c"
+                    "led_strip_encoder.c"
 
                     "./eye/Eye.cpp"
                     "./eye/AsyncTimer.cpp"

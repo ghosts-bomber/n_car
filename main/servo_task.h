@@ -6,7 +6,6 @@ extern "C" {
 #endif
 
 #define SERVO_PIN (23)
-void servo_task(void* param);
 
 void create_servo_task();
 

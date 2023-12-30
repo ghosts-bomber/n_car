@@ -11,7 +11,6 @@
 
 
 extern u8g2_t u8g2;
-void oled_task(void* param);
 
 void create_oled_task();
 
