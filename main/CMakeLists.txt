@@ -1,12 +1,13 @@
 idf_component_register(SRCS 
                     "main.cpp"
-                    "servo.c"
-                    "servo_task.c"                   
-                    "oled_task.cpp"
+                    "servo.c" "servo_task.c"                   "oled_task.cpp"
                     "wifi.c"
                     "mqtt.c"
                     "led_task.c"
                     "led_strip_encoder.c"
+                    "hid_host.cpp"
+                    "esp_hid_gap.c"
+                    "XboxControllerNotificationParser.cpp"
 
                     "./eye/Eye.cpp"
                     "./eye/AsyncTimer.cpp"
@@ -37,6 +38,8 @@ idf_component_register(SRCS
                     esp_wifi
                     mqtt
                     json
+                    # bt
+                    esp_hid
                     )
 target_compile_options(${COMPONENT_LIB} PUBLIC -std=gnu++11)
 
