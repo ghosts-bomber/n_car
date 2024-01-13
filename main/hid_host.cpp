@@ -7,6 +7,7 @@
 #include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
+#include "freertos/projdefs.h"
 #include "freertos/task.h"
 #include "nvs_flash.h"
 
@@ -48,7 +49,7 @@ static const char *TAG = "ESP_HIDH_DEMO";
 
 XboxControllerNotificationParser xInputParser;
 uint8_t xInputRawData[17];
-
+SemaphoreHandle_t xbox_mutex;
 void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
                    void *event_data) {
   esp_hidh_event_t event = (esp_hidh_event_t)id;
@@ -79,7 +80,7 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
     // param->input.map_index, param->input.report_id, param->input.length);
     // ESP_LOG_BUFFER_HEX(TAG, param->input.data, param->input.length);
     if ((NULL != bda)) {
-      if (16 == param->input.length) {
+      if (16 == param->input.length && xSemaphoreTake(xbox_mutex,portMAX_DELAY)==pdTRUE) {
         // 解析手柄蓝牙数据
         xInputRawData[0] = param->input.length;
         memcpy(&xInputRawData[1], param->input.data, param->input.length);
@@ -90,6 +91,7 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
           // esp_hidh_dev_output_set(param->input.dev, );
           ESP_LOGW(TAG, "invalid pack");
         }
+        xSemaphoreGive(xbox_mutex);
       }
     }
     break;
@@ -114,6 +116,7 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
     break;
   }
 }
+
 
 #define SCAN_DURATION_SECONDS 5
 
@@ -218,5 +221,6 @@ void create_hid_host_task(void) {
     ESP_LOGE(TAG, "esp_nimble_enable failed: %d", ret);
   }
 #endif
+  xbox_mutex = xSemaphoreCreateMutex();
   xTaskCreate(&hid_demo_task, "hid_task", 6 * 1024, NULL, 2, NULL);
 }

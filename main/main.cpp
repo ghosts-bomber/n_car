@@ -20,6 +20,8 @@
 #include "wifi.h"
 #include "led_task.h"
 #include "hid_host.h"
+#include "motor_task.h"
+#include "adc.h"
 static void init_nvs() {
   // Initialize NVS
   esp_err_t ret = nvs_flash_init();
@@ -41,6 +43,7 @@ extern "C" void app_main(void) {
   create_oled_task();
   create_led_task();
   create_hid_host_task();
+  create_motor_task();
 
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);

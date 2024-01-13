@@ -5,7 +5,8 @@
 // extern "C" {
 // #endif
 #include <stdint.h>
-
+#include "freertos/FreeRTOS.h"
+extern SemaphoreHandle_t xbox_mutex;
 void create_hid_host_task(void);
 // #ifdef __cplusplus
 // }
