@@ -2,15 +2,14 @@
 #ifndef MOTOR_TASK_H
 #define MOTOR_TASK_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 void create_motor_task(void);
 
-#ifdef __cplusplus
-}
-#endif
+// #ifdef __cplusplus
+// }
+// #endif
 
 
 

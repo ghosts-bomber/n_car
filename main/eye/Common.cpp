@@ -13,6 +13,5 @@ int random_int(int min, int max) {
   // // Return a random integer from the distribution
   // return dist(gen);
   int ret = (esp_random() % (max - min)) - min;
-  printf("random int=%d\n", ret);
   return ret;
 }

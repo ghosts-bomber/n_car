@@ -1,5 +1,5 @@
 #include "XboxControllerNotificationParser.h"
-
+#include <string>
 #define XBOX_CONTROLLER_DATA_LEN 16
 #define XBOX_CONTROLLER_INDEX_BUTTONS_DIR 12
 #define XBOX_CONTROLLER_INDEX_BUTTONS_MAIN 13

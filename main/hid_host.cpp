@@ -44,6 +44,7 @@
 #include "esp_hidh.h"
 
 #include "XboxControllerNotificationParser.h"
+#include "process_control.h"
 
 static const char *TAG = "ESP_HIDH_DEMO";
 
@@ -83,9 +84,11 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
       if (16 == param->input.length && xSemaphoreTake(xbox_mutex,portMAX_DELAY)==pdTRUE) {
         // 解析手柄蓝牙数据
         xInputRawData[0] = param->input.length;
+        // TODO cancel memcpy
         memcpy(&xInputRawData[1], param->input.data, param->input.length);
         if (0 == xInputParser.update(&xInputRawData[1], xInputRawData[0])) {
           xInputParser.outOfDate = true;
+          process_xbox_control(xInputParser);
           ESP_LOGI(TAG,"xbox: %s\n",xInputParser.toString().c_str());
         } else {
           // esp_hidh_dev_output_set(param->input.dev, );

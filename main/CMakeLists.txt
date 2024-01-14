@@ -8,8 +8,9 @@ idf_component_register(SRCS
                     "hid_host.cpp"
                     "esp_hid_gap.c"
                     "XboxControllerNotificationParser.cpp"
-                    "motor_task.c"
+                    "motor_task.cpp"
                     "adc.c"
+                    "process_control.cpp"
 
                     "./eye/Eye.cpp"
                     "./eye/AsyncTimer.cpp"
@@ -44,5 +45,5 @@ idf_component_register(SRCS
                     esp_hid
                     esp_adc
                     )
-target_compile_options(${COMPONENT_LIB} PUBLIC -std=gnu++11)
+target_compile_options(${COMPONENT_LIB} PUBLIC -std=gnu++23)
 
