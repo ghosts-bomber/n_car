@@ -23,6 +23,12 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 2.5.2
+  espressif/pid_ctrl:
+    component_hash: 17bd99c0160f1c327803aceb088ef0e4ab3410ceb0708cb87fcc950bb62e5698
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 0.1.1
   idf:
     component_hash: null
     source:
@@ -34,6 +40,6 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 8.3.11
-manifest_hash: 59930a6c0c012bca0d6d04afab3734b5befed7cc0e0747f159d880fb3f96fd53
+manifest_hash: e6b63572c3cb5fb7f9634055ef429218d301163d67b162e93fa03f1d7f14d6c7
 target: esp32
 version: 1.0.0

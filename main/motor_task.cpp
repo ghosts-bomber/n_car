@@ -50,8 +50,7 @@ static void process_motor_control(bdc_motor_handle_t motor, int16_t val) {
       bdc_motor_reverse(motor);
       bdc_motor_set_speed(motor, cal_val);
     }
-  }
-}
+  } }
 
 static void motor_control(void *arg) {
   while (1) {

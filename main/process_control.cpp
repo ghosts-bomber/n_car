@@ -12,14 +12,20 @@ void process_init() {
 
 void process_xbox_control(const XboxControllerNotificationParser &control) {
   if (xSemaphoreTake(motor_control_mutex, portMAX_DELAY) == pdTRUE) {
-    int16_t val = JOY_MAX - control.joyLVert - JOY_MAX / 2;
-    if (val >= -1000 && val <= 1000) {
-      val = 0;
+    int16_t v_val = JOY_MAX - control.joyLVert - JOY_MAX / 2;
+    if (v_val >= -1000 && v_val <= 1000) {
+      v_val = 0;
     }
-    motor_contorl.motor0 = val;
-    motor_contorl.motor1 = val;
-    motor_contorl.motor2 = val;
-    motor_contorl.motor3 = val;
+    int16_t h_val = JOY_MAX - control.joyLHori - JOY_MAX / 2;
+    if (h_val >= -1000 && h_val <= 1000) {
+      h_val = 0;
+    }
+    h_val = v_val>0?h_val:-h_val;
+    motor_contorl.motor0 = v_val-h_val;
+    motor_contorl.motor1 = v_val+h_val;
+    motor_contorl.motor2 = v_val-h_val;
+    motor_contorl.motor3 = v_val+h_val;
     xSemaphoreGive(motor_control_mutex);
   }
 }
+
