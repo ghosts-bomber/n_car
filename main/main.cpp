@@ -22,7 +22,6 @@
 #include "led_task.h"
 #include "hid_host.h"
 #include "motor_task.h"
-#include "adc.h"
 #include "process_control.h"
 static const char *TAG = "main";
 static void init_nvs() {
@@ -49,7 +48,6 @@ extern "C" void app_main(void) {
   create_oled_task();
   create_led_task();
   create_motor_task();
-  create_adc_task();
 
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);

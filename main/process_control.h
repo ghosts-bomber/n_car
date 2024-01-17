@@ -5,7 +5,6 @@
 #include "XboxControllerNotificationParser.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
-class XboxControllerNotificationParser;
 typedef struct{
   int16_t motor0;
   int16_t motor1;

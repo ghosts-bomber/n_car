@@ -11,6 +11,7 @@ idf_component_register(SRCS
                     "motor_task.cpp"
                     "adc.c"
                     "process_control.cpp"
+                    "potentiometer.c"
 
                     "./eye/Eye.cpp"
                     "./eye/AsyncTimer.cpp"
