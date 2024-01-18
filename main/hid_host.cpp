@@ -1,5 +1,4 @@
 #include "hid_host.h"
-#include <string.h>
 #include "esp_bt.h"
 #include "esp_event.h"
 #include "esp_log.h"
@@ -10,6 +9,7 @@
 #include "freertos/projdefs.h"
 #include "freertos/task.h"
 #include "nvs_flash.h"
+#include <string.h>
 
 #if CONFIG_BT_NIMBLE_ENABLED
 #include "host/ble_hs.h"
@@ -47,9 +47,9 @@
 #include "process_control.h"
 
 static const char *TAG = "ESP_HIDH_DEMO";
-
+static TaskHandle_t ble_task_handle = NULL;
 XboxControllerNotificationParser xInputParser;
-uint8_t xInputRawData[17];
+static uint8_t xInputRawData[17];
 SemaphoreHandle_t xbox_mutex;
 void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
                    void *event_data) {
@@ -81,7 +81,8 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
     // param->input.map_index, param->input.report_id, param->input.length);
     // ESP_LOG_BUFFER_HEX(TAG, param->input.data, param->input.length);
     if ((NULL != bda)) {
-      if (16 == param->input.length && xSemaphoreTake(xbox_mutex,portMAX_DELAY)==pdTRUE) {
+      if (16 == param->input.length &&
+          xSemaphoreTake(xbox_mutex, portMAX_DELAY) == pdTRUE) {
         // 解析手柄蓝牙数据
         xInputRawData[0] = param->input.length;
         // TODO cancel memcpy
@@ -89,7 +90,7 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
         if (0 == xInputParser.update(&xInputRawData[1], xInputRawData[0])) {
           xInputParser.outOfDate = true;
           process_xbox_control(xInputParser);
-          ESP_LOGI(TAG,"xbox: %s\n",xInputParser.toString().c_str());
+          ESP_LOGI(TAG, "xbox: %s\n", xInputParser.toString().c_str());
         } else {
           // esp_hidh_dev_output_set(param->input.dev, );
           ESP_LOGW(TAG, "invalid pack");
@@ -112,6 +113,7 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
     const uint8_t *bda = esp_hidh_dev_bda_get(param->close.dev);
     ESP_LOGI(TAG, ESP_BD_ADDR_STR " CLOSE: %s", ESP_BD_ADDR_HEX(bda),
              esp_hidh_dev_name_get(param->close.dev));
+    vTaskResume(ble_task_handle);
     break;
   }
   default:
@@ -120,59 +122,67 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
   }
 }
 
-
 #define SCAN_DURATION_SECONDS 5
 
 void hid_demo_task(void *pvParameters) {
-  size_t results_len = 0;
-  esp_hid_scan_result_t *results = NULL;
-  ESP_LOGI(TAG, "SCAN...");
-  // start scan for HID devices
-  esp_hid_scan(SCAN_DURATION_SECONDS, &results_len, &results);
-  ESP_LOGI(TAG, "SCAN: %u results", results_len);
-  if (results_len) {
-    esp_hid_scan_result_t *r = results;
-    esp_hid_scan_result_t *cr = NULL;
-    while (r) {
-      printf("  %s: " ESP_BD_ADDR_STR ", ",
-             (r->transport == ESP_HID_TRANSPORT_BLE) ? "BLE" : "BT ",
-             ESP_BD_ADDR_HEX(r->bda));
-      printf("RSSI: %d, ", r->rssi);
-      printf("USAGE: %s, ", esp_hid_usage_str(r->usage));
-#if CONFIG_BT_BLE_ENABLED
-      if (r->transport == ESP_HID_TRANSPORT_BLE) {
-        cr = r;
-        printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
-        printf("ADDR_TYPE: '%s', ", ble_addr_type_str(r->ble.addr_type));
+  while (1) {
+    size_t results_len = 0;
+    esp_hid_scan_result_t *results = NULL;
+    ESP_LOGI(TAG, "SCAN...");
+    // start scan for HID devices
+    while (1) {
+      esp_hid_scan(SCAN_DURATION_SECONDS, &results_len, &results);
+      ESP_LOGI(TAG, "SCAN: %u results", results_len);
+      if (results_len != 0) {
+        break;
       }
+      vTaskDelay(pdMS_TO_TICKS(5000));
+    }
+    if (results_len) {
+      esp_hid_scan_result_t *r = results;
+      esp_hid_scan_result_t *cr = NULL;
+      while (r) {
+        printf("  %s: " ESP_BD_ADDR_STR ", ",
+               (r->transport == ESP_HID_TRANSPORT_BLE) ? "BLE" : "BT ",
+               ESP_BD_ADDR_HEX(r->bda));
+        printf("RSSI: %d, ", r->rssi);
+        printf("USAGE: %s, ", esp_hid_usage_str(r->usage));
+#if CONFIG_BT_BLE_ENABLED
+        if (r->transport == ESP_HID_TRANSPORT_BLE) {
+          cr = r;
+          printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
+          printf("ADDR_TYPE: '%s', ", ble_addr_type_str(r->ble.addr_type));
+        }
 #endif /* CONFIG_BT_BLE_ENABLED */
 #if CONFIG_BT_NIMBLE_ENABLED
-      if (r->transport == ESP_HID_TRANSPORT_BLE) {
-        cr = r;
-        printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
-        printf("ADDR_TYPE: '%d', ", r->ble.addr_type);
-      }
+        if (r->transport == ESP_HID_TRANSPORT_BLE) {
+          cr = r;
+          printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
+          printf("ADDR_TYPE: '%d', ", r->ble.addr_type);
+        }
 #endif /* CONFIG_BT_BLE_ENABLED */
 #if CONFIG_BT_HID_HOST_ENABLED
-      if (r->transport == ESP_HID_TRANSPORT_BT) {
-        cr = r;
-        printf("COD: %s[", esp_hid_cod_major_str(r->bt.cod.major));
-        esp_hid_cod_minor_print(r->bt.cod.minor, stdout);
-        printf("] srv 0x%03x, ", r->bt.cod.service);
-        print_uuid(&r->bt.uuid);
-        printf(", ");
-      }
+        if (r->transport == ESP_HID_TRANSPORT_BT) {
+          cr = r;
+          printf("COD: %s[", esp_hid_cod_major_str(r->bt.cod.major));
+          esp_hid_cod_minor_print(r->bt.cod.minor, stdout);
+          printf("] srv 0x%03x, ", r->bt.cod.service);
+          print_uuid(&r->bt.uuid);
+          printf(", ");
+        }
 #endif /* CONFIG_BT_HID_HOST_ENABLED */
-      printf("NAME: %s ", r->name ? r->name : "");
-      printf("\n");
-      r = r->next;
+        printf("NAME: %s ", r->name ? r->name : "");
+        printf("\n");
+        r = r->next;
+      }
+      if (cr) {
+        // open the last result
+        esp_hidh_dev_open(cr->bda, cr->transport, cr->ble.addr_type);
+      }
+      // free the results
+      esp_hid_scan_results_free(results);
     }
-    if (cr) {
-      // open the last result
-      esp_hidh_dev_open(cr->bda, cr->transport, cr->ble.addr_type);
-    }
-    // free the results
-    esp_hid_scan_results_free(results);
+    vTaskSuspend(ble_task_handle);
   }
   vTaskDelete(NULL);
 }
@@ -193,13 +203,14 @@ void create_hid_host_task(void) {
   ESP_LOGE(TAG, "Please turn on BT HID host or BLE!");
   return;
 #endif
-  ret = nvs_flash_init();
-  if (ret == ESP_ERR_NVS_NO_FREE_PAGES ||
-      ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-    ESP_ERROR_CHECK(nvs_flash_erase());
-    ret = nvs_flash_init();
-  }
-  ESP_ERROR_CHECK(ret);
+  /*  ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES ||
+        ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+      ESP_ERROR_CHECK(nvs_flash_erase());
+      ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
+    */
   ESP_LOGI(TAG, "setting hid gap, mode:%d", HID_HOST_MODE);
   ESP_ERROR_CHECK(esp_hid_gap_init(HID_HOST_MODE));
 #if CONFIG_BT_BLE_ENABLED
@@ -225,5 +236,5 @@ void create_hid_host_task(void) {
   }
 #endif
   xbox_mutex = xSemaphoreCreateMutex();
-  xTaskCreate(&hid_demo_task, "hid_task", 6 * 1024, NULL, 2, NULL);
+  xTaskCreate(&hid_demo_task, "hid_task", 6 * 1024, NULL, 1, &ble_task_handle);
 }

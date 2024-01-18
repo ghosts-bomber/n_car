@@ -17,7 +17,6 @@
 #include "oled_task.h"
 #include "portmacro.h"
 #include "sdkconfig.h"
-#include "servo_task.h"
 #include "wifi.h"
 #include "led_task.h"
 #include "hid_host.h"
