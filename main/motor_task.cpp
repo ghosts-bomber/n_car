@@ -85,6 +85,9 @@ static void motor_control(void *arg) {
       process_motor_control(motor2->motor_handle, motor_contorl.motor2);
       process_motor_control(motor3->motor_handle, motor_contorl.motor3);
       xSemaphoreGive(motor_control_mutex);
+      int v0 = motor0->pm_handle->get_voltage(motor0->pm_handle);
+      int v1 = motor1->pm_handle->get_voltage(motor1->pm_handle);
+      ESP_LOGI(TAG,"v0= %d , v1= %d \n",v0,v1);
     }
     vTaskDelay(pdMS_TO_TICKS(CONTROL_INTERVAL));
   }

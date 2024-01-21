@@ -20,7 +20,7 @@ struct potentiomenter_t{
 typedef struct potentiomenter_t* potentiomenter_handle_t;
 
 typedef struct{
-  uint32_t group_id;
+  uint8_t group_id;
   uint8_t ch_id;
   uint8_t bitwidth;
   uint8_t atten;

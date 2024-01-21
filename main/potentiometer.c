@@ -156,6 +156,7 @@ esp_err_t potentiomenter_new_adc_device(
                     "no mem for potentiomenter adc");
   potentiometer_adc->adc_cali_handle = adc_cali_handle;
   potentiometer_adc->adc_handle = adc_handle;
+  potentiometer_adc->ch = adc_config->ch_id;
   potentiometer_adc->base.potentiomenter_config = *ptentiomenter_config;
   potentiometer_adc->base.get_value = get_value;
   potentiometer_adc->base.get_voltage = get_voltage;

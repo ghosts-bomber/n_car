@@ -9,7 +9,7 @@ idf_component_register(SRCS
                     "esp_hid_gap.c"
                     "XboxControllerNotificationParser.cpp"
                     "motor_task.cpp"
-                    "adc.c"
+                    # "adc.c"
                     "process_control.cpp"
                     "potentiometer.c"
 
