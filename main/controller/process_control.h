@@ -5,14 +5,14 @@
 #include "XboxControllerNotificationParser.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
+#define JOY_MAX (65535)
+typedef void(*Init_Fun)();
+typedef void(*Process)(const XboxControllerNotificationParser&);
 typedef struct{
-  int16_t motor0;
-  int16_t motor1;
-  int16_t motor2;
-  int16_t motor3;
-}Motor_control;
-extern Motor_control motor_contorl;
-extern SemaphoreHandle_t motor_control_mutex;
+  Init_Fun init;
+  Process process;
+}Controller;
+
 // extern QueueHandle_t motor_control_queue;
 void process_init();
 void process_xbox_control(const XboxControllerNotificationParser& control);

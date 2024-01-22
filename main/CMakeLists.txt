@@ -8,10 +8,12 @@ idf_component_register(SRCS
                     "hid_host.cpp"
                     "esp_hid_gap.c"
                     "XboxControllerNotificationParser.cpp"
-                    "motor_task.cpp"
+                    "motor_task.c"
                     # "adc.c"
-                    "process_control.cpp"
                     "potentiometer.c"
+
+                    "controller/process_control.cpp"
+                    "controller/motor_controller.cpp"
 
                     "./eye/Eye.cpp"
                     "./eye/AsyncTimer.cpp"
@@ -30,6 +32,7 @@ idf_component_register(SRCS
                     INCLUDE_DIRS 
                     "./"
                     "./eye/"
+                    "./controller/"
 
                     REQUIRES
                     bootloader_support

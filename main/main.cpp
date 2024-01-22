@@ -39,15 +39,16 @@ extern "C" void app_main(void) {
   init_nvs();
   ESP_ERROR_CHECK(esp_netif_init());
   ESP_ERROR_CHECK(esp_event_loop_create_default());
-  process_init();
-  wifi_init_sta();
-  create_hid_host_task();
-  mqtt_app_start();
   // create_servo_task();
   create_oled_task();
   create_led_task();
   create_motor_task();
-
+  wifi_init_sta();
+  process_init();
+  mqtt_app_start();
+  create_hid_host_task();
+  
+  
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }

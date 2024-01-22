@@ -1,16 +1,13 @@
+#include "motor_controller.h"
 #include "process_control.h"
-#include "XboxControllerNotificationParser.h"
-#include <memory.h>
-// QueueHandle_t motor_control_queue = NULL;
-SemaphoreHandle_t motor_control_mutex;
-Motor_control motor_contorl;
-#define JOY_MAX (65535)
-void process_init() {
-  motor_control_mutex = xSemaphoreCreateMutex();
-  memset((void *)&motor_contorl, 0, sizeof(Motor_control));
+#include "motor_task.h"
+static void init()
+{
+
 }
 
-void process_xbox_control(const XboxControllerNotificationParser &control) {
+static void process_xbox(const XboxControllerNotificationParser& control)
+{
   if (xSemaphoreTake(motor_control_mutex, portMAX_DELAY) == pdTRUE) {
     int16_t v_val = JOY_MAX - control.joyLVert - JOY_MAX / 2;
     if (v_val >= -1000 && v_val <= 1000) {
@@ -29,3 +26,10 @@ void process_xbox_control(const XboxControllerNotificationParser &control) {
   }
 }
 
+Controller* create_motor_controller()
+{
+  static Controller controller;
+  controller.init = init;
+  controller.process = process_xbox;
+  return &controller;
+}

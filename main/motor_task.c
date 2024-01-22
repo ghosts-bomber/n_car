@@ -1,10 +1,9 @@
 #include "motor_task.h"
 #include "bdc_motor.h"
 #include "esp_log.h"
-#include "freertos/FreeRTOS.h"
 #include "hal/adc_types.h"
 #include "potentiometer.h"
-#include "process_control.h"
+#include <string.h>
 #define BDC_MCPWM_FREQ_HZ 25000                // 25KHz PWM
 #define BDC_MCPWM_TIMER_RESOLUTION_HZ 10000000 // 10MHz, 1 tick = 0.1us
 #define BDC_MCPWM_DUTY_TICK_MAX                                                \
@@ -27,8 +26,7 @@
 #define ADC1_CHAN3 ADC_CHANNEL_7 // 35
 //
 static const char *TAG = "motor_task";
-extern SemaphoreHandle_t motor_control_mutex;
-extern Motor_control motor_contorl;
+
 typedef struct {
   bdc_motor_handle_t motor_handle;
   potentiomenter_handle_t pm_handle;
@@ -38,6 +36,9 @@ static Motor *motor0;
 static Motor *motor1;
 static Motor *motor2;
 static Motor *motor3;
+
+Motor_control motor_contorl;
+SemaphoreHandle_t motor_control_mutex;
 
 static Motor *init_motor(const bdc_motor_config_t *motor_config,
                          const bdc_motor_mcpwm_config_t *mcpwm_config,
@@ -131,6 +132,8 @@ void create_motor_task(void) {
   adc_config.ch_id = ADC1_CHAN3;
   motor3 = init_motor(&motor_config, &mcpwm_config, &pm_config, &adc_config);
 
+  motor_control_mutex = xSemaphoreCreateMutex();
+  memset((void *)&motor_contorl, 0, sizeof(Motor_control));
   TaskHandle_t motor_task_handle = NULL;
   xTaskCreate(motor_control, "motor_task", 2048, NULL, 1, &motor_task_handle);
 }
