@@ -5,7 +5,6 @@
 #include "XboxControllerNotificationParser.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
-#define JOY_MAX (65535)
 typedef void(*Init_Fun)();
 typedef void(*Process)(const XboxControllerNotificationParser&);
 typedef struct{

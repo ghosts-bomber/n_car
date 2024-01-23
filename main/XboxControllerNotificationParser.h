@@ -6,7 +6,9 @@
 #include <string>
 using namespace std;
 #define XBOX_CONTROLLER_ERROR_INVALID_LENGTH 1
-
+#define TRIG_MAX_VAL (1024)
+#define JOY_MAX_VAL (65536)
+#define JOY_MID_VAL (32768)
 //--------------------------------------------------------------------------------
 // Generic Desktop Page inputReport (Device --> Host)
 //--------------------------------------------------------------------------------
@@ -81,9 +83,9 @@ class XboxControllerNotificationParser
 public:
   XboxControllerNotificationParser();
 
-  static const uint32_t TRIG_MAX = 1024;
-  static const uint32_t JOY_MAX = 65536;
-  static const uint32_t JOY_MID = 32768;
+  static const uint32_t TRIG_MAX = TRIG_MAX_VAL;
+  static const uint32_t JOY_MAX = JOY_MAX_VAL;
+  static const uint32_t JOY_MID = JOY_MID_VAL;
   bool outOfDate;
   bool btnA, btnB, btnX, btnY;
   bool btnShare, btnStart, btnSelect, btnXbox;

@@ -151,5 +151,5 @@ void create_led_task(void) {
   b_right_handle = b_left_handle++;
   top_handle = b_right_handle++;
   TaskHandle_t led_handle = NULL;
-  xTaskCreate(led_task, "led_task", 2048, led_chan, 1, &led_handle);
+  xTaskCreate(led_task, "led_task", 512, led_chan, 1, &led_handle);
 }

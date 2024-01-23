@@ -135,5 +135,5 @@ void create_motor_task(void) {
   motor_control_mutex = xSemaphoreCreateMutex();
   memset((void *)&motor_contorl, 0, sizeof(Motor_control));
   TaskHandle_t motor_task_handle = NULL;
-  xTaskCreate(motor_control, "motor_task", 2048, NULL, 1, &motor_task_handle);
+  xTaskCreate(motor_control, "motor_task", 1024, NULL, 1, &motor_task_handle);
 }

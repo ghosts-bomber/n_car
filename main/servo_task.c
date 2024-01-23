@@ -30,6 +30,6 @@ void create_servo_task()
   };
   servo_init(&servo_dev);
   TaskHandle_t servo_handle = NULL;
-  xTaskCreate(servo_task,"servo_task",2048,&servo_dev,1,&servo_handle);
+  xTaskCreate(servo_task,"servo_task",1024,&servo_dev,1,&servo_handle);
 
 }

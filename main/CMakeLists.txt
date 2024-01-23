@@ -1,6 +1,8 @@
 idf_component_register(SRCS 
                     "main.cpp"
-                    "servo.c" "servo_task.c"                   "oled_task.cpp"
+                    "servo.c" 
+                    "servo_task.c"                   
+                    "oled_task.cpp"
                     "wifi.c"
                     "mqtt.c"
                     "led_task.c"
@@ -14,6 +16,7 @@ idf_component_register(SRCS
 
                     "controller/process_control.cpp"
                     "controller/motor_controller.cpp"
+                    "controller/car_light_controller.cpp"
 
                     "./eye/Eye.cpp"
                     "./eye/AsyncTimer.cpp"

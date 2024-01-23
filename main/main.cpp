@@ -48,7 +48,6 @@ extern "C" void app_main(void) {
   mqtt_app_start();
   create_hid_host_task();
   
-  
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
