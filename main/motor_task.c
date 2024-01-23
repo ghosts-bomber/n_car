@@ -1,6 +1,7 @@
 #include "motor_task.h"
 #include "bdc_motor.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "hal/adc_types.h"
 #include "potentiometer.h"
 #include <string.h>
@@ -88,7 +89,9 @@ static void motor_control(void *arg) {
       xSemaphoreGive(motor_control_mutex);
       int v0 = motor0->pm_handle->get_voltage(motor0->pm_handle);
       int v1 = motor1->pm_handle->get_voltage(motor1->pm_handle);
-      ESP_LOGI(TAG,"v0= %d , v1= %d \n",v0,v1);
+      static int64_t t = 0;
+      t = esp_timer_get_time();
+      ESP_LOGI(TAG,"t:%lld v0= %d , v1= %d \n",t,v0,v1);
     }
     vTaskDelay(pdMS_TO_TICKS(CONTROL_INTERVAL));
   }
