@@ -24,11 +24,11 @@ static void process_xbox(const XboxControllerNotificationParser& control)
 {
   if (xSemaphoreTake(motor_control_mutex, portMAX_DELAY) == pdTRUE) {
     int16_t v_val = control.JOY_MID- control.joyLVert;
-    if (v_val >= -1000 && v_val <= 1000) {
+    if (v_val >= -ERR_CTL_VAL && v_val <= ERR_CTL_VAL) {
       v_val = 0;
     }
     int16_t h_val = control.JOY_MID - control.joyLHori;
-    if (h_val >= -1000 && h_val <= 1000) {
+    if (h_val >= -ERR_CTL_VAL && h_val <= ERR_CTL_VAL) {
       h_val = 0;
     }
     h_val = v_val>0?h_val:-h_val;

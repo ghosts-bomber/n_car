@@ -44,9 +44,9 @@ extern "C" void app_main(void) {
   create_led_task();
   create_motor_task();
   process_init();
-  mqtt_app_start();
   create_hid_host_task();
   wifi_init_sta();
+  mqtt_app_start();
   
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);

@@ -5,6 +5,7 @@
 #include "XboxControllerNotificationParser.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
+#define ERR_CTL_VAL (3000)
 typedef void(*Init_Fun)();
 typedef void(*Process)(const XboxControllerNotificationParser&);
 typedef struct{

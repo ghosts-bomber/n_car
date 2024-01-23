@@ -4,7 +4,6 @@
 #include "lwip/err.h"
 #include "portmacro.h"
 #include <stdint.h>
-#define ERR_VAL (1000)
 #define LIGHT_MAX (255)
 #define LIGHT_MIN (0)
 static TimerHandle_t blink_timer = NULL;
@@ -34,15 +33,15 @@ static void init() {
 static void process_xbox(const XboxControllerNotificationParser &parse) {
   if (xSemaphoreTake(led_control_mutex, portMAX_DELAY) == pdTRUE) {
     init_car_light();
-    int32_t sub = parse.JOY_MID - parse.joyLHori;
-    if (sub > ERR_VAL) {
+    int32_t sub = parse.JOY_MID - parse.joyLVert;
+    if (sub > ERR_CTL_VAL) {
       uint32_t light = sub * LIGHT_MAX / parse.JOY_MID;
       set_light_color(f_left_handle, light, light, light);
       set_light_color(f_right_handle, light, light, light);
-    } else if (sub < -ERR_VAL) {
+    } else if (sub < -ERR_CTL_VAL) {
       uint32_t light = -sub * LIGHT_MAX / parse.JOY_MID;
-      set_light_color(b_left_handle, light, light, light);
-      set_light_color(b_right_handle, light, light, light);
+      set_light_color(b_left_handle, light, 0, 0);
+      set_light_color(b_right_handle, light, 0, 0);
     }
     xSemaphoreGive(led_control_mutex);
   }

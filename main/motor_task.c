@@ -91,7 +91,7 @@ static void motor_control(void *arg) {
       int v1 = motor1->pm_handle->get_voltage(motor1->pm_handle);
       static int64_t t = 0;
       t = esp_timer_get_time();
-      ESP_LOGI(TAG,"t:%lld v0= %d , v1= %d \n",t,v0,v1);
+      // ESP_LOGI(TAG,"t:%lld v0= %d , v1= %d \n",t,v0,v1);
     }
     vTaskDelay(pdMS_TO_TICKS(CONTROL_INTERVAL));
   }
@@ -138,5 +138,5 @@ void create_motor_task(void) {
   motor_control_mutex = xSemaphoreCreateMutex();
   memset((void *)&motor_contorl, 0, sizeof(Motor_control));
   TaskHandle_t motor_task_handle = NULL;
-  xTaskCreate(motor_control, "motor_task", 1024, NULL, 1, &motor_task_handle);
+  xTaskCreate(motor_control, "motor_task", 2048, NULL, 1, &motor_task_handle);
 }

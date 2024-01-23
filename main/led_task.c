@@ -10,8 +10,8 @@
            // resolution)
 #define RMT_LED_STRIP_GPIO_NUM 23
 
-#define LED_NUMBERS 5
-#define CHASE_SPEED_MS 10
+#define LED_NUMBERS 8
+#define CHASE_SPEED_MS 100
 
 static const char *TAG = "led_task";
 
@@ -113,15 +113,16 @@ static void led_task(void *param) {
   };
   rmt_encoder_handle_t led_encoder = NULL;
   ESP_ERROR_CHECK(rmt_new_led_strip_encoder(&encoder_config, &led_encoder));
+  // color_led(led_chan, led_encoder, &tx_config);
   while (1) {
     // Flush RGB values to LEDs
     if (xSemaphoreTake(led_control_mutex, portMAX_DELAY) == pdTRUE) {
       ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels,
                                    sizeof(led_strip_pixels), &tx_config));
       xSemaphoreGive(led_control_mutex);
+      ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
+      vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
     }
-    ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
-    vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
   }
 }
 
@@ -143,13 +144,16 @@ void create_led_task(void) {
   ESP_ERROR_CHECK(rmt_enable(led_chan));
   ESP_LOGI(TAG, "Start LED rainbow chase");
 
-  memset(led_strip_pixels,0,sizeof(led_strip_pixels));
+  memset(led_strip_pixels, 0, sizeof(led_strip_pixels));
   led_control_mutex = xSemaphoreCreateMutex();
-  f_left_handle = (Car_light *)led_strip_pixels;
-  f_right_handle = f_left_handle++;
-  b_left_handle = f_right_handle++;
-  b_right_handle = b_left_handle++;
-  top_handle = b_right_handle++;
+  f_left_handle = (Car_light *)(led_strip_pixels + sizeof(Car_light) * 0);
+  f_right_handle = (Car_light *)(led_strip_pixels + sizeof(Car_light) * 1);
+  b_left_handle = (Car_light *)(led_strip_pixels + sizeof(Car_light) * 2);
+  b_right_handle = (Car_light *)(led_strip_pixels + sizeof(Car_light) * 3);
+  top_handle = (Car_light *)(led_strip_pixels + sizeof(Car_light) * 4);
+  ESP_LOGI(TAG, "arr:%p fl:%p fr:%p bl:%p br:%p t:%p\n", led_strip_pixels,
+           f_left_handle, f_right_handle, b_left_handle, b_right_handle,
+           top_handle);
   TaskHandle_t led_handle = NULL;
-  xTaskCreate(led_task, "led_task", 512, led_chan, 1, &led_handle);
+  xTaskCreate(led_task, "led_task", 2048, led_chan, 1, &led_handle);
 }
