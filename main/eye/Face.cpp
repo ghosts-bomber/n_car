@@ -13,7 +13,6 @@ You should have received a copy of the GNU Affero General Public License along w
 
 #include "Face.h"
 #include "Common.h"
-#include "esp_timer.h"
 #include "u8g2.h"
 
 // U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 4, /* data= */ 5);
@@ -62,8 +61,8 @@ void Face::LookBottom() {
 
 void Face::Wait(unsigned long milliseconds) {
 	unsigned long start;
-	start = esp_timer_get_time();
-	while (esp_timer_get_time() - start < milliseconds) {
+	start = get_time_ms();
+	while (get_time_ms() - start < milliseconds) {
 		Draw();
 	}
 }

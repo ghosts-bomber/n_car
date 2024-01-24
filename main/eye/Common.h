@@ -8,5 +8,6 @@ extern u8g2_t u8g2;
 // extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2;
 
 int random_int(int min, int max);
-
+int64_t get_time_ms();
+int64_t get_time_us();
 #endif

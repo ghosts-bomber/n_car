@@ -11,7 +11,7 @@ You should have received a copy of the GNU Affero General Public License along w
 ****************************************************/
 
 #include "AsyncTimer.h"
-#include "esp_timer.h"
+#include "Common.h"
 AsyncTimer::AsyncTimer(unsigned long millisInterval) : AsyncTimer(millisInterval, nullptr) {}
 
 AsyncTimer::AsyncTimer(unsigned long millisInterval, AsyncTimerCallback onFinish) {
@@ -25,7 +25,7 @@ void AsyncTimer::Start() {
 }
 
 void AsyncTimer::Reset() {
-	_startTime = esp_timer_get_time();
+	_startTime = get_time_ms();
 }
 
 void AsyncTimer::Stop() {
@@ -36,7 +36,7 @@ bool AsyncTimer::Update() {
 	if (_isActive == false) return false;
 
 	_isExpired = false;
-	if (static_cast<unsigned long>(esp_timer_get_time() - _startTime) >= Interval) {
+	if (static_cast<unsigned long>(get_time_ms() - _startTime) >= Interval) {
 		_isExpired = true;
 		if (OnFinish != nullptr) OnFinish();
 		Reset();
@@ -53,11 +53,11 @@ unsigned long AsyncTimer::GetStartTime() {
 }
 
 unsigned long AsyncTimer::GetElapsedTime() {
-	return esp_timer_get_time() - _startTime;
+	return get_time_ms() - _startTime;
 }
 
 unsigned long AsyncTimer::GetRemainingTime() {
-	return Interval - esp_timer_get_time() + _startTime;
+	return Interval - get_time_ms() + _startTime;
 }
 
 bool AsyncTimer::IsActive() const {

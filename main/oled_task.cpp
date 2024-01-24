@@ -2,6 +2,7 @@
 #include "FaceEmotions.hpp"
 #include "driver/i2c.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/projdefs.h"
 #include "u8g2.h"
 #include "u8x8.h"
 #include "eye/Face.h"
@@ -43,7 +44,7 @@ static void oled_task(void *param) {
   if(i>=EMOTIONS_COUNT) i=0; 
   face->Behavior.SetEmotion((eEmotions)i++, 1.0);
   face->Update();
-  vTaskDelay(1000 / portTICK_PERIOD_MS);
+  vTaskDelay(pdMS_TO_TICKS(1000));
   ++i;
   }
 }

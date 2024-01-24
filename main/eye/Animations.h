@@ -13,7 +13,6 @@ You should have received a copy of the GNU Affero General Public License along w
 #ifndef _ANIMATIONS_h
 #define _ANIMATIONS_h
 #include "Common.h"
-#include "esp_timer.h"
 
 class IAnimation {
 public:
@@ -27,13 +26,13 @@ private:
 
 class AnimationBase : IAnimation {
   public:
-	  AnimationBase(unsigned long interval) : Interval(interval), StarTime(esp_timer_get_time()) {}
+	  AnimationBase(unsigned long interval) : Interval(interval), StarTime(get_time_ms()) {}
 
 	  unsigned long Interval;
 	  unsigned long StarTime;
 
 	  virtual void Restart() {
-		  StarTime = esp_timer_get_time();
+		  StarTime = get_time_ms();
 	  }
 	  float GetValue() override final {
 		  return GetValue(GetElapsed());
@@ -42,7 +41,7 @@ class AnimationBase : IAnimation {
 		  return Calculate(elapsedMillis);
 	  }
 	  unsigned long GetElapsed() override {
-		  return static_cast<unsigned long> (esp_timer_get_time() - StarTime);
+		  return static_cast<unsigned long> (get_time_ms() - StarTime);
 	  }
 
   protected:

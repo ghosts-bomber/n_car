@@ -6,13 +6,13 @@
 
 static TimerHandle_t out_controller_timer = NULL;
 static void process_out_controller(TimerHandle_t timer_handle){
-  if (xSemaphoreTake(motor_control_mutex, portMAX_DELAY) == pdTRUE) {
+  // if (xSemaphoreTake(motor_control_mutex, portMAX_DELAY) == pdTRUE) {
     motor_contorl.motor0 = 0;
     motor_contorl.motor1 = 0;
     motor_contorl.motor2 = 0;
     motor_contorl.motor3 = 0;
-    xSemaphoreGive(motor_control_mutex);
-  }
+  //   xSemaphoreGive(motor_control_mutex);
+  // }
 }
 static void init()
 {

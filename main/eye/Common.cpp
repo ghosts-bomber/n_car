@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "esp_random.h"
+#include "esp_timer.h"
 #include <cstdio>
 // #include <random>
 // using namespace std;
@@ -14,4 +15,12 @@ int random_int(int min, int max) {
   // return dist(gen);
   int ret = (esp_random() % (max - min)) - min;
   return ret;
+}
+int64_t get_time_ms()
+{
+  return esp_timer_get_time()/1000;
+}
+int64_t get_time_us()
+{
+  return esp_timer_get_time();
 }
