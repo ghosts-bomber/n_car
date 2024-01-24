@@ -90,7 +90,7 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id,
         if (0 == xInputParser.update(&xInputRawData[1], xInputRawData[0])) {
           xInputParser.outOfDate = true;
           process_xbox_control(xInputParser);
-          ESP_LOGI(TAG, "xbox: %s\n", xInputParser.toString().c_str());
+          // ESP_LOGI(TAG, "xbox: %s\n", xInputParser.toString().c_str());
         } else {
           // esp_hidh_dev_output_set(param->input.dev, );
           ESP_LOGW(TAG, "invalid pack");

@@ -13,21 +13,21 @@
 #define BDC_MCPWM_DUTY_TICK_MAX                                                \
   (BDC_MCPWM_TIMER_RESOLUTION_HZ /                                             \
    BDC_MCPWM_FREQ_HZ) // maximum value we can set for the duty cycle, in ticks
-#define CONTROL_INTERVAL (20)
+#define CONTROL_INTERVAL (40)
 
 #define MOTOR0_A (18)
 #define MOTOR0_B (19)
-#define MOTOR1_A (25)
-#define MOTOR1_B (26)
-#define MOTOR2_A (12)
-#define MOTOR2_B (13)
+#define MOTOR1_A (12)
+#define MOTOR1_B (13)
+#define MOTOR2_A (25)
+#define MOTOR2_B (26)
 #define MOTOR3_A (2)
 #define MOTOR3_B (4)
 
-#define ADC1_CHAN0 ADC_CHANNEL_4 // 32
-#define ADC1_CHAN1 ADC_CHANNEL_5 // 33
-#define ADC1_CHAN2 ADC_CHANNEL_6 // 34
-#define ADC1_CHAN3 ADC_CHANNEL_7 // 35
+#define ADC1_CHAN0 ADC_CHANNEL_7 // 35
+#define ADC1_CHAN1 ADC_CHANNEL_6 // 34
+#define ADC1_CHAN2 ADC_CHANNEL_5 // 33
+#define ADC1_CHAN3 ADC_CHANNEL_4 // 32
 //
 #define ADC_JUMP_VAL (500)
 #define PI (3.14)
@@ -98,7 +98,7 @@ static void process_motor_control_legancy(bdc_motor_handle_t motor, int16_t val)
 }
 
 static void process_motor_control(bdc_motor_handle_t motor, float val) {
-  if (val > -0.1 || val < 0.1) {
+  if (val > -0.1 && val < 0.1) {
     bdc_motor_coast(motor);
   } else {
     if (val > 0) {
@@ -144,11 +144,12 @@ static float get_motor_rad(Motor *motor) {
 static void motor_process(Motor *motor, int ctl) {
 
   float m_rad = get_motor_rad(motor);
-  float dst_rad = 2*2*PI/(ctl/1000);
+  float dst_rad = 2*2*PI*ctl/32768.0;
   float error = m_rad - dst_rad;
   float new_speed = 0.0f;
   pid_compute(motor->pid_ctrl, error, &new_speed);
-  process_motor_control(motor->motor_handle, motor_contorl.motor2);
+  // ESP_LOGI(TAG,"m_rad:%f ctl:%d ,dst_rad= %f , val= %f \n",m_rad,ctl,dst_rad,new_speed);
+  process_motor_control(motor->motor_handle, new_speed);
 }
 static void motor_control_task(void *arg) {
   int motor0_ctl = 0;
