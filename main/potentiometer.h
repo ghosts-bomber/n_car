@@ -5,8 +5,8 @@
 extern "C"{
 #endif
 typedef struct{
- uint32_t min_r;
- uint32_t max_r;
+ int min;
+ int max;
 } potentiomenter_config_t;
 
 typedef struct potentiomenter_t potentiomenter_t;
