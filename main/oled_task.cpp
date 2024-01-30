@@ -42,9 +42,10 @@ static void oled_task(void *param) {
   int i=0;
   while (1) {
   if(i>=EMOTIONS_COUNT) i=0; 
+  face->Behavior.Clear();
   face->Behavior.SetEmotion((eEmotions)i++, 1.0);
   face->Update();
-  vTaskDelay(pdMS_TO_TICKS(1000));
+  vTaskDelay(pdMS_TO_TICKS(2000));
   ++i;
   }
 }
@@ -64,7 +65,7 @@ void create_oled_task() {
   // face->RandomBehavior = true;
 
   // Automatically blink
-  face->RandomBlink = true;
+  // face->RandomBlink = true;
   // Set blink rate
   face->Blink.Timer.SetIntervalMillis(4000);
 
@@ -72,5 +73,5 @@ void create_oled_task() {
   face->RandomLook = false;
 
   TaskHandle_t handle = NULL;
-  xTaskCreate(oled_task, "oled_task", 4096, &u8g2, 2, &handle);
+  xTaskCreate(oled_task, "oled_task", 4096, &u8g2, 1, &handle);
 }
