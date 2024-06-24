@@ -46,6 +46,6 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 8.3.11
-manifest_hash: bc5f90ba190b9f0df72c26bd3e624091df17f62241469720ed0a69b9b4f941cc
+manifest_hash: a5d003d7ad4da477d92dc8063b24c60d6c23df7fcb9ac8ff96c7b6cf7ce420ca
 target: esp32
 version: 1.0.0
