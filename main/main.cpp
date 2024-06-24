@@ -12,16 +12,17 @@
 #include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "hid_host.h"
+#include "led_task.h"
+#include "motor_task.h"
+#include "mpu_task.h"
 #include "mqtt.h"
 #include "nvs_flash.h"
 #include "oled_task.h"
 #include "portmacro.h"
+#include "process_control.h"
 #include "sdkconfig.h"
 #include "wifi.h"
-#include "led_task.h"
-#include "hid_host.h"
-#include "motor_task.h"
-#include "process_control.h"
 static const char *TAG = "main";
 static void init_nvs() {
   // Initialize NVS
@@ -40,14 +41,15 @@ extern "C" void app_main(void) {
   ESP_ERROR_CHECK(esp_netif_init());
   ESP_ERROR_CHECK(esp_event_loop_create_default());
   // create_servo_task();
-  create_oled_task();
-  create_led_task();
+  // create_oled_task();
+  // create_led_task();
+  create_mpu_task();
   create_motor_task();
   process_init();
   create_hid_host_task();
   wifi_init_sta();
   mqtt_app_start();
-  
+
   while (1) {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }

@@ -18,11 +18,17 @@ dependencies:
       type: service
     version: 1.4.0
   espressif/led_strip:
-    component_hash: ed1d5c6113fa545e20c7be17e6e7c09d43b18fcb43068e2b2b27a412de6a405a
+    component_hash: fc66f8544851132555bc668475f7b68acd6a211c8075db5ce1951cbfa27dfb88
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 2.5.2
+    version: 2.5.4
+  espressif/mpu6050:
+    component_hash: d69219ccb141372b863c511749ffbeab28417ac71c205d7ed7030c308e1b6832
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.2.0
   espressif/pid_ctrl:
     component_hash: 17bd99c0160f1c327803aceb088ef0e4ab3410ceb0708cb87fcc950bb62e5698
     source:
@@ -40,6 +46,6 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 8.3.11
-manifest_hash: e6b63572c3cb5fb7f9634055ef429218d301163d67b162e93fa03f1d7f14d6c7
+manifest_hash: bc5f90ba190b9f0df72c26bd3e624091df17f62241469720ed0a69b9b4f941cc
 target: esp32
 version: 1.0.0

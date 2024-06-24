@@ -13,6 +13,7 @@ idf_component_register(SRCS
                     "motor_task.c"
                     # "adc.c"
                     "potentiometer.c"
+                    mpu_task.c
 
                     "controller/process_control.cpp"
                     "controller/motor_controller.cpp"
