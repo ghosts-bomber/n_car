@@ -1,5 +1,6 @@
 ## IDF Component Manager Manifest File
 dependencies:
+  espressif/arduino-esp32: "^3.0.2"
   espressif/mpu6050: "^1.2.0"
   espressif/led_strip: "^2.5.2"
   espressif/bdc_motor: "^0.1.0"

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
+#include "esp32-hal.h"
 #include "esp_chip_info.h"
 #include "esp_event.h"
 #include "esp_flash.h"
@@ -22,6 +23,7 @@
 #include "process_control.h"
 #include "sdkconfig.h"
 #include "wifi.h"
+#include "Arduino.h"
 static const char *TAG = "main";
 static void init_nvs() {
   // Initialize NVS
@@ -35,6 +37,7 @@ static void init_nvs() {
 }
 
 extern "C" void app_main(void) {
+  initArduino();
   esp_log_level_set(TAG, ESP_LOG_DEBUG);
   init_nvs();
   ESP_ERROR_CHECK(esp_netif_init());
