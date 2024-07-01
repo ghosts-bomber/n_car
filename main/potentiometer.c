@@ -6,7 +6,6 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "hal/adc_types.h"
-#include "portmacro.h"
 
 static adc_oneshot_unit_handle_t adc1_handle = NULL;
 static adc_oneshot_unit_handle_t adc2_handle = NULL;

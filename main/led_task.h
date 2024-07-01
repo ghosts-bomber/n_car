@@ -2,6 +2,7 @@
 #ifndef LED_TASK_H
 #define LED_TASK_H
 #include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include <stdint.h>
 #ifdef __cplusplus
 extern "C" {

@@ -1,7 +1,6 @@
 #include "servo_task.h"
 #include "freertos/FreeRTOS.h"
 #include "mqtt.h"
-#include "portmacro.h"
 #include <stdint.h>
 extern QueueHandle_t servo_queue;
 static void servo_task(void* param)

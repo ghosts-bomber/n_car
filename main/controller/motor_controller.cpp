@@ -1,6 +1,7 @@
 #include "motor_controller.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/projdefs.h"
+#include "freertos/timers.h"
 #include "process_control.h"
 #include "motor_task.h"
 

@@ -19,7 +19,6 @@
 #include "mqtt.h"
 #include "nvs_flash.h"
 #include "oled_task.h"
-#include "portmacro.h"
 #include "process_control.h"
 #include "sdkconfig.h"
 #include "wifi.h"
