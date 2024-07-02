@@ -13,7 +13,8 @@ idf_component_register(SRCS
                     "motor_task.c"
                     # "adc.c"
                     "potentiometer.c"
-                    mpu_task.c
+                    "mpu_task.c"
+                    "kalman_filter.c"
 
                     "controller/process_control.cpp"
                     "controller/motor_controller.cpp"

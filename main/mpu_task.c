@@ -3,6 +3,7 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_system.h"
+#include "kalman_filter.h"
 #include "mpu6050.h"
 #define I2C_MASTER_SCL_IO 26      /*!< gpio number for I2C master clock */
 #define I2C_MASTER_SDA_IO 25      /*!< gpio number for I2C master data  */
@@ -50,27 +51,48 @@ static void i2c_sensor_mpu6050_init(void) {
 static void mpu_task(void *param) {
   esp_err_t ret;
   uint8_t mpu6050_deviceid;
-  mpu6050_acce_value_t acce;
-  mpu6050_gyro_value_t gyro;
-  mpu6050_temp_value_t temp;
+  mpu6050_raw_acce_value_t acce;
+  mpu6050_raw_gyro_value_t gyro;
 
   ret = mpu6050_get_deviceid(mpu6050, &mpu6050_deviceid);
   ESP_ERROR_CHECK(ret);
+
+  long axo = 0, ayo = 0, azo = 0; // 加速度计偏移量
+  long gxo = 0, gyo = 0, gzo = 0; // 陀螺仪偏移量
+  unsigned short times = 200;     // 采样次数
+  for (int i = 0; i < times; i++) {
+    ret = mpu6050_get_raw_acce(mpu6050, &acce);
+    ESP_ERROR_CHECK(ret);
+
+    ret = mpu6050_get_raw_gyro(mpu6050, &gyro);
+    ESP_ERROR_CHECK(ret);
+    axo += acce.raw_acce_x;
+    ayo += acce.raw_acce_y;
+    azo += acce.raw_acce_z; // 采样和
+    gxo += gyro.raw_gyro_x;
+    gyo += gyro.raw_gyro_y;
+    gzo += gyro.raw_gyro_z;
+    vTaskDelay(pdMS_TO_TICKS(10));
+  }
+
+  axo /= times;
+  ayo /= times;
+  azo /= times; // 计算加速度计偏移
+  gxo /= times;
+  gyo /= times;
+  gzo /= times; // 计算陀螺仪偏移
+  init_mpu_migration(axo, ayo, azo, gxo, gyo, gzo);
+
   while (true) {
-    ret = mpu6050_get_acce(mpu6050, &acce);
+    ret = mpu6050_get_raw_acce(mpu6050, &acce);
     ESP_ERROR_CHECK(ret);
-    ESP_LOGI(TAG, "acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", acce.acce_x,
-             acce.acce_y, acce.acce_z);
 
-    ret = mpu6050_get_gyro(mpu6050, &gyro);
+    ret = mpu6050_get_raw_gyro(mpu6050, &gyro);
     ESP_ERROR_CHECK(ret);
-    ESP_LOGI(TAG, "gyro_x:%.2f, gyro_y:%.2f, gyro_z:%.2f\n", gyro.gyro_x,
-             gyro.gyro_y, gyro.gyro_z);
+    kalman_filter_mpu_data(acce.raw_acce_x, acce.raw_acce_y, acce.raw_acce_z,
+                           gyro.raw_gyro_x, gyro.raw_gyro_y, gyro.raw_gyro_z);
 
-    ret = mpu6050_get_temp(mpu6050, &temp);
-    ESP_ERROR_CHECK(ret);
-    ESP_LOGI(TAG, "t:%.2f \n", temp.temp);
-    vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
   mpu6050_delete(mpu6050);
   ret = i2c_driver_delete(I2C_MASTER_NUM);
